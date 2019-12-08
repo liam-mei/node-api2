@@ -65,8 +65,19 @@ router.get("/:id", (req, res) => {
 router.delete("/:id", (req, res) => {
   const { id } = req.params;
   db.remove(id)
-    .then()
-    .catch();
+    .then(number => {
+      if (number) {
+        return res
+          .status(200)
+          .json({ success: `${number} of records deleted` });
+      }
+      return res
+        .status(404)
+        .json({ errorMessage: "post with that id not found" });
+    })
+    .catch(err =>
+      res.status(500).json({ errorMessage: "error deleting post" })
+    );
 });
 
 router.put("/:id", (req, res) => {
