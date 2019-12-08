@@ -32,6 +32,34 @@ router.post("/", (req, res) => {
     });
 });
 
+// get all posts
+router.get("/", async (req, res) => {
+  try {
+    const posts = await db.find();
+    res.status(200).json(posts);
+  } catch (err) {
+    res
+      .status(500)
+      .json({ error: "There was an error while retrieving posts", err });
+  }
+});
+
+// get post by id
+router.get("/:id", (req, res) => {
+  const { id } = req.params;
+
+  db.findById(id)
+    .then(post => {
+      if (post.length === 0) {
+        res.status(404).json({ error: "post by that id cannot be found" });
+      } else {
+        res.status(200).json(post[0]);
+      }
+    })
+    .catch(err => {
+      res.status(500).json({ error: "error retrieving post", err });
+    });
+});
 
 
 router.put("/:id", (req, res) => {});
