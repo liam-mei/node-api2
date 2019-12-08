@@ -61,7 +61,45 @@ router.get("/:id", (req, res) => {
     });
 });
 
+// delete post by id
+router.delete("/:id", (req, res) => {
+  const { id } = req.params;
+  db.remove(id)
+    .then()
+    .catch();
+});
 
-router.put("/:id", (req, res) => {});
+router.put("/:id", (req, res) => {
+  const { id } = req.params;
+  const { title, contents } = req.body;
+
+  if (!title || !contents) {
+    return res
+      .status(400)
+      .json({ errorMessage: "Please Provide title and contents" });
+  }
+
+  db.update(id, { title, contents })
+    .then(updated => {
+      if (updated) {
+        db.findById(id)
+          .then(post => res.status(200).json(post))
+          .catch(err =>
+            res.status(500).json({
+              errorMessage:
+                "post was updated but there was an error retrieving updated post",
+              err
+            })
+          );
+      } else {
+        res.status(404).json({ errorMessage: "post with that id not found" });
+      }
+    })
+    .catch(err => {
+      res
+        .status(500)
+        .json({ errorMessage: "there was error updating post", err });
+    });
+});
 
 module.exports = router;
