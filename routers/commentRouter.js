@@ -28,5 +28,26 @@ router.post("/comments", (req, res) => {
     );
 });
 
+// get all comments of post with id
+router.get("/:postid/comments", (req, res) => {
+  const { postid } = req.params;
+
+  db.findPostComments(postid)
+    .then(comments => {
+      if (comments.length) {
+        res.status(200).json(comments);
+      } else {
+        res.status(404).json({ error: "post with that id doesn't exist" });
+      }
+    })
+    .catch(err => res.status(500).json({ error: "error retrieving comments" }));
+});
+
+// get comment with comment id
+router.get("/comments/:id", (req, res) => {
+  db.findCommentById(commentid)
+    .then(comment => res.status(200).json(comment))
+    .catch(err => res.status(500).json(err));
+});
 
 module.exports = router;
