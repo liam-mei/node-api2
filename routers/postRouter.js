@@ -1,7 +1,9 @@
 const express = require("express");
 const db = require("../data/db");
+const commentRouter = require("./commentRouter");
 
 const router = express.Router();
+router.use("/", commentRouter);
 
 // post message from body
 router.post("/", (req, res) => {
